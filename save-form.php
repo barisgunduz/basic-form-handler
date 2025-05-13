@@ -3,31 +3,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     date_default_timezone_set("Europe/Istanbul");
 
     $timestamp = date("Y-m-d H:i:s");
-    $formType = isset($_POST['form_type']) ? $_POST['form_type'] : 'general';
-    $format = 'txt';
+    $formTypeRaw = isset($_POST['form_type']) ? $_POST['form_type'] : 'generic_txt';
 
-    if (str_ends_with($formType, '_csv')) {
-        $format = 'csv';
-        $formType = substr($formType, 0, -4);
-    } elseif (str_ends_with($formType, '_txt')) {
-        $formType = substr($formType, 0, -4);
-    }
+    // Format ayrımı: contact_txt vs contact_csv
+    $parts = explode('_', $formTypeRaw);
+    $formType = $parts[0];
+    $format = isset($parts[1]) ? strtolower($parts[1]) : 'txt';
 
     $dirPath = __DIR__ . "/form-records";
     if (!file_exists($dirPath)) {
         mkdir($dirPath, 0777, true);
     }
 
-    $filePath = $dirPath . "/" . $formType . "-records." . $format;
-
-    if ($format === 'csv') {
-        $fp = fopen($filePath, 'a');
-        if (filesize($filePath) === 0) {
-            fputcsv($fp, array_keys(array_filter($_POST, fn($k) => $k !== 'form_type', ARRAY_FILTER_USE_KEY)));
+    if ($format === "csv") {
+        $filePath = $dirPath . "/" . $formType . "-records.csv";
+        $headers = [];
+        $values = [];
+        foreach ($_POST as $key => $value) {
+            if ($key === 'form_type') continue;
+            $headers[] = ucfirst($key);
+            $values[] = str_replace(["\r", "\n", ","], " ", strip_tags(trim($value)));
         }
-        fputcsv($fp, array_values(array_filter($_POST, fn($k) => $k !== 'form_type', ARRAY_FILTER_USE_KEY)));
-        fclose($fp);
+        if (!file_exists($filePath)) {
+            file_put_contents($filePath, implode(",", $headers) . "\n", FILE_APPEND | LOCK_EX);
+        }
+        file_put_contents($filePath, implode(",", $values) . "\n", FILE_APPEND | LOCK_EX);
+        echo "Form has been saved (CSV).";
     } else {
+        $filePath = $dirPath . "/" . $formType . "-records.txt";
         $content = "Submission Time: " . $timestamp . "\n";
         foreach ($_POST as $key => $value) {
             if ($key === 'form_type') continue;
@@ -35,9 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $content .= str_repeat("-", 40) . "\n\n";
         file_put_contents($filePath, $content, FILE_APPEND | LOCK_EX);
+        echo "Form has been saved (TXT).";
     }
-
-    echo "Form submitted successfully.";
 } else {
     echo "Invalid request.";
 }

@@ -1,119 +1,105 @@
+# Basic Form Handler
 
-# 📄 Universal Form Handler – README.md
-
-This project provides a universal solution for collecting form data via HTML and saving it on the server in either `.txt` or `.csv` format. It's built with plain PHP and JavaScript, without requiring any frameworks or databases.
-
----
-
-## 🔧 Features
-
-- ✅ Accepts any HTML form with any number of fields
-- ✅ Supports both `.txt` and `.csv` saving formats
-- ✅ Stores records grouped by form type
-- ✅ Displays success/failure messages below the form
-- ✅ Easy to reuse across multiple websites
+A lightweight, plug-and-play PHP + JavaScript solution for handling contact or quote forms on simple HTML sites without a backend framework.
 
 ---
 
-## 📁 Project Structure
+## ✅ Features
+
+- Supports **multiple forms** on a single page
+- Saves form data as `.txt` or `.csv` automatically
+- Works with basic HTML + PHP (no database needed)
+- Auto-creates `form-records/` folder if not exists
+- Displays success/error messages in-page
+- Designed to be **modular** and reusable across projects
+
+---
+
+## 📁 File Structure
 
 ```
-/
-├── form-handler.js            ← JavaScript to handle form submission via fetch
-├── save-form.php              ← PHP script that processes and stores the form data
-├── form-records/              ← Automatically created folder to store submissions
-│   ├── contact_txt-records.txt
-│   ├── quote_csv-records.csv
-└── README.md
+basic-form-handler/
+├── demo.html
+├── form-handler.js
+├── save-form.php
+├── README.md
+├── .gitignore
+└── form-records/   ← Generated automatically
 ```
 
 ---
 
-## 🚀 How to Use
+## 🛠 Setup Instructions
 
-### 1. **Include the JavaScript**
+1. **Place files on a PHP-enabled server** (e.g. inside XAMPP `htdocs` or live server).
+2. Ensure `save-form.php` has write permission:
+   - If `form-records/` folder is not writable, you may need to run:
 
-In your HTML page (before `</body>`), include:
+     ```bash
+     chmod -R 777 form-records/
+     ```
+   - Or create it manually:
+     ```bash
+     mkdir form-records
+     chmod 777 form-records
+     ```
+
+3. Use the example below to add a form to your HTML page:
 
 ```html
-<script src="form-handler.js"></script>
-```
-
-### 2. **Create Your Form**
-
-Example HTML form:
-
-```html
-<form data-form-id="contact1" data-form-type="contact_txt">
+<form data-form-id="contact1" data-form-type="contact_txt" onsubmit="submitUniversalForm(event)">
   <input type="text" name="name" placeholder="Your Name" required />
   <input type="email" name="email" placeholder="Email" required />
   <textarea name="message" placeholder="Your message"></textarea>
-  <button type="submit" onclick="submitUniversalForm(event)">Send</button>
+  <button type="submit">Send</button>
 </form>
 
-<p data-message-id="contact1"></p> <!-- Success/Error message will appear here -->
-```
+<p data-message-id="contact1"></p>
 
-> 🧠 `data-form-id`: Unique identifier used to target the message area  
-> 🧠 `data-form-type`: Format and type indicator in the format `formType_format`  
-> Example: `contact_txt` → form type is `contact`, file format is `.txt`
+<script src="form-handler.js"></script>
+```
 
 ---
 
-## 📌 Naming Logic
+## ✏️ Form Attributes
 
-### `data-form-type` value format:
-```
-formType_format
-```
+- `data-form-id` → Used to link form with the response `<p>` tag.
+- `data-form-type` → Controls:
+  - Save file name: `{form_type}-records.txt` or `.csv`
+  - File format: Add `_txt` or `_csv` suffix
 
-- `formType` → Used as the filename prefix (e.g., `contact`)
-- `format` → Saving format: `txt` or `csv`
+**Examples:**
 
-Examples:
-- `quote_txt` → Saves to `form-records/quote-records.txt`
-- `survey_csv` → Saves to `form-records/survey-records.csv`
+- `contact_txt` → saves to `form-records/contact-records.txt`
+- `quote_csv` → saves to `form-records/quote-records.csv`
 
 ---
 
-## 💾 Output Examples
+## 📋 Output Format
 
-### TXT Format:
+### TXT Mode:
 ```
-Submission Time: 2025-05-13 11:12:00
-Name: Jane Doe
-Email: jane@example.com
-Message: Hello, I’d like to get in touch.
+Gönderim Zamanı: 2025-05-13 12:34:56
+Name: Barış Gündüz
+Email: test@example.com
+Message: Hello world!
 ----------------------------------------
 ```
 
-### CSV Format:
+### CSV Mode:
 ```
-"2025-05-13 11:12:00","Jane Doe","jane@example.com","Hello, I’d like to get in touch."
+timestamp,name,email,message
+2025-05-13 12:34:56,Barış Gündüz,test@example.com,Hello world!
 ```
 
 ---
 
-## 📂 No Folder? No Problem!
+## ❓ Notes
 
-If `form-records/` doesn’t exist, it will be created automatically by `save-form.php`.
-
----
-
-## ⚠️ Notes
-
-- Requires a PHP-enabled server
-- No database or backend framework needed
-- `formType` and `format` are **extracted from `data-form-type`**
-- Make sure the form fields have `name` attributes — otherwise they won’t be captured
-- All form submissions are appended to the existing file
+- Works on **localhost** with `http://localhost/basic-form-handler/demo.html`
+- Access `save-form.php` directly — it should return `Geçersiz istek.` when visited in browser
+- Handles all field types (`text`, `email`, `tel`, `textarea`, `select`, etc.)
 
 ---
 
-## 🧪 Testing
-
-To test the handler:
-1. Upload the files to your PHP-supported hosting
-2. Create an HTML form with the correct `data-` attributes
-3. Fill the form and submit
-4. Check the `/form-records/` directory for the saved file
+## 👨‍💻 Created by [Barış Gündüz](https://www.gunduzmedya.com) • Powered by El Patron 🧠
