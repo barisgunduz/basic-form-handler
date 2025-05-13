@@ -102,4 +102,9 @@ timestamp,name,email,message
 
 ---
 
-## 👨‍💻 Created by [Barış Gündüz](https://www.gunduzmedya.com) • Powered by El Patron 🧠
+## 💡 Support & Sponsorship
+If you find this project useful, consider supporting us! 😊
+
+[![Powered by DigitalOcean](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=525051e9e7a7&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
+🚀 **Happy coding!** Feel free to contribute, explore, and share! 😊
