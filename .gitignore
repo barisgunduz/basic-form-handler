@@ -1,0 +1,23 @@
+# Ignore form records
+/form-records/
+!/.gitkeep
+
+# Ignore backup or temp files
+*.log
+*.tmp
+*.bak
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Node or PHP package folders
+node_modules/
+vendor/
